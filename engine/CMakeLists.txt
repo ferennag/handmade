@@ -12,6 +12,8 @@ add_library(engine SHARED
         src/platform/platform_macosx.c
         include/core/application.h
         src/core/application.c
+        include/game_types.h
+        include/entry.h
 )
 
 if (APPLE)

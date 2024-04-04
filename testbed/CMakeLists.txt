@@ -3,5 +3,7 @@ project(testbed C)
 
 set(CMAKE_C_STANDARD 17)
 
-add_executable(testbed src/main.c)
+add_executable(testbed src/entry.c
+        src/game.h
+        src/game.c)
 target_link_libraries(testbed engine)
