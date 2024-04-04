@@ -7,6 +7,7 @@ add_library(engine SHARED
         include/defines.h
         include/core/logger.h
         src/core/logger.c
+        include/core/asserts.h
 )
 target_compile_options(engine PRIVATE -g -Wall -Werror -Wvarargs)
 target_link_libraries(engine Vulkan::Vulkan)

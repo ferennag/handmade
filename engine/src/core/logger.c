@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include "core/logger.h"
+#include "core/asserts.h"
 
 b8 init_logging() {
     // TODO create a log file
@@ -26,4 +27,8 @@ void log_output(LogLevel level, const char *message, ...) {
 
     // TODO platform specific output
     printf("%s%s\n", level_strings[level], out_message);
+}
+
+void report_assertion_failure(const char *expression, const char *message, const char *file, i32 line) {
+    log_output(LOG_LEVEL_FATAL, "Assertion failure: %s, message: %s, in file: %s, line: %d", expression, message, file, line);
 }
