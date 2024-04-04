@@ -1,16 +1,19 @@
-#include <core/logger.h>
-#include <platform/platform.h>
+#include <stdlib.h>
+#include <core/application.h>
 
 int main() {
-    HM_INFO("Starting the application...");
+    ApplicationConfig config = {
+            .start_pos_x = 100,
+            .start_pos_y = 100,
+            .start_width = 1280,
+            .start_height = 760,
+            .name = "Handmade Hero"
+    };
 
-    PlatformState state;
-    if (platform_init(&state, "Handmade Hero", 100, 100, 1280, 720)) {
-        while(!platform_pump_messages(&state)) {
-        }
+    if (!application_create(&config)) {
+        exit(-1);
     }
-    platform_shutdown(&state);
 
-    HM_INFO("Shutting down the application... Bye");
+    application_run();
     return 0;
 }
