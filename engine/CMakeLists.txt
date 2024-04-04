@@ -8,6 +8,8 @@ add_library(engine SHARED
         include/core/logger.h
         src/core/logger.c
         include/core/asserts.h
+        include/platform/platform.h
+        src/platform/platform_macosx.c
 )
 target_compile_options(engine PRIVATE -g -Wall -Werror -Wvarargs)
 target_link_libraries(engine Vulkan::Vulkan)
