@@ -11,6 +11,17 @@ add_library(engine SHARED
         include/platform/platform.h
         src/platform/platform_macosx.c
 )
+
+if (APPLE)
+    find_package(X11 REQUIRED)
+    message(STATUS "Using X11 windowing system for Apple platforms.")
+    message(STATUS "X11_FOUND = ${X11_FOUND}")
+    message(STATUS "X11_INCLUDE_DIR = ${X11_INCLUDE_DIR}")
+    message(STATUS "X11_LIBRARIES = ${X11_LIBRARIES}")
+
+    set(WINDOWING_LIBRARIES X11::X11 X11::xcb X11::X11_xcb)
+endif ()
+
 target_compile_options(engine PRIVATE -g -Wall -Werror -Wvarargs)
-target_link_libraries(engine Vulkan::Vulkan)
+target_link_libraries(engine Vulkan::Vulkan ${WINDOWING_LIBRARIES})
 target_include_directories(engine PUBLIC include)
