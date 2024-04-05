@@ -1,6 +1,6 @@
 #include <entry.h>
 #include "game.h"
-#include <platform/platform.h> // TODO remove this
+#include <core/memory.h>
 
 b8 create_game(Game *out_game) {
     out_game->application_config.start_pos_x = 100;
@@ -16,7 +16,7 @@ b8 create_game(Game *out_game) {
     out_game->on_resize = game_on_resize;
 
     // Create the game state
-    GameState *game_state = platform_allocate(sizeof(GameState), FALSE);
+    GameState *game_state = hm_alloc(sizeof(GameState), MEMORY_TAG_GAME);
     out_game->state = game_state;
 
     return TRUE;

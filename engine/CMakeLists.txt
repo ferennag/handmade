@@ -14,6 +14,8 @@ add_library(engine SHARED
         src/core/application.c
         include/game_types.h
         include/entry.h
+        include/core/memory.h
+        src/core/memory.c
 )
 
 if (APPLE)

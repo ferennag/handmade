@@ -2,6 +2,7 @@
 #include "core/application.h"
 #include "core/logger.h"
 #include "platform/platform.h"
+#include "core/memory.h"
 
 typedef struct application_state {
     Game *game_inst;
@@ -57,6 +58,8 @@ b8 application_create(Game *game_inst) {
 }
 
 b8 application_run() {
+    HM_INFO(get_memory_usage_str());
+
     while (app_state.is_running) {
         if (platform_pump_messages(&app_state.platform)) {
             app_state.is_running = FALSE;
