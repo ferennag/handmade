@@ -16,6 +16,10 @@ add_library(engine SHARED
         include/entry.h
         include/core/memory.h
         src/core/memory.c
+        include/core/event.h
+        src/core/event.c
+        include/containers/darray.h
+        include/containers/darray.c
 )
 
 if (APPLE)

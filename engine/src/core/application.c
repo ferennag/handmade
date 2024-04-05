@@ -3,6 +3,7 @@
 #include "core/logger.h"
 #include "platform/platform.h"
 #include "core/memory.h"
+#include "core/event.h"
 
 typedef struct application_state {
     Game *game_inst;
@@ -30,6 +31,11 @@ b8 application_create(Game *game_inst) {
     // Initialize subsystems
     if (!init_logging()) {
         HM_ERROR("Failed to initialize the logging subsystem!");
+        return FALSE;
+    }
+
+    if (!event_init()) {
+        HM_ERROR("Failed to initialize the event subsystem!");
         return FALSE;
     }
 
@@ -81,6 +87,10 @@ b8 application_run() {
     }
 
     app_state.is_running = FALSE;
+
+    shutdown_logging();
+    event_shutdown();
+
     platform_shutdown(&app_state.platform);
     return TRUE;
 }

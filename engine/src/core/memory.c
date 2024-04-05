@@ -69,7 +69,7 @@ void *hm_zero_memory(void *block, u64 size) {
     return platform_zero_memory(block, size);
 }
 
-void *hm_copy_memory(void *dest, void *src, u64 size) {
+void *hm_copy_memory(void *dest, const void *src, u64 size) {
     return platform_copy_memory(dest, src, size);
 }
 

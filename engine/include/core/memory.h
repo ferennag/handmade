@@ -32,7 +32,7 @@ void shutdown_memory();
 void* hm_alloc(u64 size, MemoryTag tag);
 void hm_free(void *block, u64 size, MemoryTag tag);
 void* hm_zero_memory(void *block, u64 size);
-void* hm_copy_memory(void *dest, void *src, u64 size);
+void* hm_copy_memory(void *dest, const void *src, u64 size);
 void* hm_set_memory(void *dest, i32 value, u64 size);
 
 char* get_memory_usage_str();
