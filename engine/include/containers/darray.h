@@ -35,17 +35,17 @@ void *_darray_insert_at(void *array, u64 index, void *value_ptr);
 
 #define darray_push(array, value)            \
     {                                        \
-        __auto_type temp = value;            \
+        typeof(value) temp = value;            \
         array = _darray_push(array, &temp);  \
     }
 
 #define darray_pop(array, value_ptr)    \
     _darray_pop(array, value_ptr);
 
-#define darray_insert_at(array, value)              \
+#define darray_insert_at(array, index, value)              \
     {                                               \
         __auto_type temp = value;                   \
-        array = _darray_insert_at(array, &temp);    \
+        array = _darray_insert_at(array, index, &temp);    \
     }
 
 #define darray_pop_at(array, index, value_ptr)  \
