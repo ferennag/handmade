@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.27)
-project(engine C)
+project(engine LANGUAGES C CXX)
 set(CMAKE_C_STANDARD 17)
+
+include(CTest)
 
 find_package(Vulkan REQUIRED)
 add_library(engine SHARED
@@ -19,7 +21,7 @@ add_library(engine SHARED
         include/core/event.h
         src/core/event.c
         include/containers/darray.h
-        include/containers/darray.c
+        src/containers/darray.c
 )
 
 if (APPLE)
@@ -35,3 +37,8 @@ endif ()
 target_compile_options(engine PRIVATE -g -Wall -Werror -Wvarargs)
 target_link_libraries(engine Vulkan::Vulkan ${WINDOWING_LIBRARIES})
 target_include_directories(engine PUBLIC include)
+
+add_subdirectory(tests)
+
+enable_testing()
+add_test(NAME engine_tests COMMAND check_engine)
