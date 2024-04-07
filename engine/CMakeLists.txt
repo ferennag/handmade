@@ -26,6 +26,14 @@ add_library(engine SHARED
         src/core/input.c
         include/core/clock.h
         src/core/clock.c
+        include/renderer/renderer_types.h
+        include/renderer/renderer_frontend.h
+        include/renderer/renderer_backend.h
+        src/renderer/renderer_backend.c
+        src/renderer/renderer_frontend.c
+        include/renderer/vulkan/vulkan_backend.h
+        src/renderer/vulkan/vulkan_backend.c
+        include/renderer/vulkan/vulkan_types.h
 )
 
 if (APPLE)

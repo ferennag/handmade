@@ -6,6 +6,7 @@
 #include "core/event.h"
 #include "core/input.h"
 #include "core/clock.h"
+#include "renderer/renderer_frontend.h"
 
 typedef struct application_state {
     Game *game_inst;
@@ -59,6 +60,11 @@ b8 application_create(Game *game_inst) {
         return FALSE;
     }
 
+    if (!renderer_init(app_state.game_inst->application_config.name, &app_state.platform)) {
+        HM_ERROR("Failed to initialize the renderer subsystem!");
+        return FALSE;
+    }
+
     if (!app_state.game_inst->initialize(app_state.game_inst)) {
         HM_FATAL("Failed to initialize the game");
         return FALSE;
@@ -99,6 +105,9 @@ b8 application_run() {
                 break;
             }
 
+            RenderPacket packet = {.delta_time = delta};
+            renderer_draw_frame(&packet);
+
             clock_end_frame(&app_state.clock);
 
             // Input is checked at the end of the frame, and used in the next frame
@@ -113,6 +122,8 @@ b8 application_run() {
     input_shutdown();
     event_shutdown();
     shutdown_logging();
+
+    renderer_shutdown();
 
     platform_shutdown(&app_state.platform);
     return TRUE;
