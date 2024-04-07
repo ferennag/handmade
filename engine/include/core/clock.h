@@ -3,6 +3,7 @@
 #include "defines.h"
 
 typedef struct Clock {
+    f64 target_fps;
     f64 start_time;
     f64 elapsed;
 
@@ -12,13 +13,11 @@ typedef struct Clock {
     f64 last_time;
 } Clock;
 
-Clock *clock_create_and_start();
-
 void clock_destroy(Clock *clock);
 
 void clock_update(Clock *clock);
 
-void clock_start(Clock *clock);
+void clock_start(Clock *clock, f64 target_fps);
 
 void clock_stop(Clock *clock);
 

@@ -71,10 +71,9 @@ b8 application_create(Game *game_inst) {
 }
 
 b8 application_run() {
-    clock_start(&app_state.clock);
-    clock_update(&app_state.clock);
-
     f64 target_fps = 1.0f / 60.0f;
+    clock_start(&app_state.clock, target_fps);
+    clock_update(&app_state.clock);
 
     HM_INFO(get_memory_usage_str());
 
@@ -101,16 +100,6 @@ b8 application_run() {
             }
 
             clock_end_frame(&app_state.clock);
-            f64 remaining_seconds = target_fps - app_state.clock.frame_elapsed;
-
-            if (remaining_seconds > 0) {
-                f64 remaining_ms = remaining_seconds * 1000;
-                b8 limit_frames = FALSE;
-
-                if (remaining_ms > 0 && limit_frames) {
-                    platform_sleep(remaining_ms - 1);
-                }
-            }
 
             // Input is checked at the end of the frame, and used in the next frame
             // TODO pass delta time
@@ -119,6 +108,7 @@ b8 application_run() {
     }
 
     app_state.is_running = FALSE;
+    clock_stop(&app_state.clock);
 
     input_shutdown();
     event_shutdown();
