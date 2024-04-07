@@ -6,6 +6,8 @@ typedef enum MouseButtons {
     MOUSE_BUTTON_LEFT,
     MOUSE_BUTTON_RIGHT,
     MOUSE_BUTTON_MIDDLE,
+    MOUSE_BUTTON_4,
+    MOUSE_BUTTON_5,
     MOUSE_MAX_BUTTONS,
 } MouseButtons;
 
