@@ -11,9 +11,15 @@
     HM_ASSERT_MSG(expr == VK_SUCCESS, string_VkResult(result));     \
 }
 
+typedef struct VulkanDevice {
+    VkPhysicalDevice physical_device;
+    VkDevice device;
+} VulkanDevice;
+
 typedef struct VulkanContext {
     VkInstance instance;
     VkAllocationCallbacks *allocation_callbacks;
+    VulkanDevice device;
 
 #if DEBUG == TRUE
     VkDebugUtilsMessengerEXT debug_messenger;

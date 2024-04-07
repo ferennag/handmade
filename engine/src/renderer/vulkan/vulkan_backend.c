@@ -4,6 +4,7 @@
 #include "core/string.h"
 #include "containers/darray.h"
 #include "renderer/vulkan/vulkan_platform.h"
+#include "renderer/vulkan/vulkan_device.h"
 
 static VulkanContext context = {0};
 
@@ -103,6 +104,13 @@ b8 vulkan_backend_initialize(RendererBackend *renderer_backend, const char *app_
     HM_DEBUG("Vulkan Debugger created");
 #endif
 
+
+
+    if (!vulkan_device_create(&context)) {
+        HM_ERROR("Unable to create the Vulkan device.");
+        return FALSE;
+    }
+
     HM_INFO("Vulkan Renderer initialized successfully.");
     return TRUE;
 }
@@ -112,6 +120,8 @@ void vulkan_backend_shutdown(RendererBackend *renderer_backend) {
         PFN_vkDestroyDebugUtilsMessengerEXT func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(context.instance, "vkDestroyDebugUtilsMessengerEXT");
         func(context.instance, context.debug_messenger, context.allocation_callbacks);
     }
+
+    vulkan_device_destroy(&context);
 
     vkDestroyInstance(context.instance, context.allocation_callbacks);
 }

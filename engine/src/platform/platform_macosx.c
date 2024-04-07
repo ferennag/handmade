@@ -12,6 +12,10 @@
 #include <sys/time.h>
 #include "containers/darray.h"
 
+#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_macos.h>
+#include "renderer/vulkan/vulkan_types.h"
+
 #if _POSIX_C_SOURCE >= 199309L
 #include <time.h>
 #else
@@ -178,6 +182,14 @@ void platform_console_write_error(const char *message, u8 color) {
 
 void platform_get_required_extension_names(const char ***out_extensions) {
     darray_push(*out_extensions, &"VK_MVK_macos_surface");
+}
+
+b8 platform_create_vulkan_surface(PlatformState *platform_state, VulkanContext *vulkan_context) {
+    // https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkMacOSSurfaceCreateInfoMVK.html
+//    VkMacOSSurfaceCreateInfoMVK create_info = {VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK};
+    // create_info.pView = 0 //pView is a reference to either a CAMetalLayer object or an NSView object.
+    // TODO finish this
+    return TRUE;
 }
 
 f64 platform_get_absolute_time() {

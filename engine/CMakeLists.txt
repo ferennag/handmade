@@ -37,6 +37,8 @@ add_library(engine SHARED
         include/core/string.h
         src/core/string.c
         include/renderer/vulkan/vulkan_platform.h
+        include/renderer/vulkan/vulkan_device.h
+        src/renderer/vulkan/vulkan_device.c
 )
 
 if (APPLE)
