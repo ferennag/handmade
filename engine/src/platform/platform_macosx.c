@@ -55,7 +55,7 @@ b8 platform_init(PlatformState *platform_state, const char *app_name, i32 x, i32
     );
     state->window = window;
     XStoreName(display, window, app_name);
-    XSelectInput(display, window, KeyPressMask | KeyReleaseMask | PointerMotionMask);
+    XSelectInput(display, window, KeyPressMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
     XMapWindow(display, window);
     XFlush(display);
 

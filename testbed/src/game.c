@@ -2,20 +2,33 @@
 #include <core/event.h>
 #include "game.h"
 
-b8 on_keypress (EventCode code, void *sender, void *listener_inst, EventContext context) {
+b8 on_keypress(EventCode code, void *sender, void *listener_inst, EventContext context) {
     HM_DEBUG("Key pressed: %d", context.data.u16[0]);
     return TRUE;
 }
 
-b8 on_mouse_move (EventCode code, void *sender, void *listener_inst, EventContext context) {
+b8 on_button_press(EventCode code, void *sender, void *listener_inst, EventContext context) {
+    if (code == EVENT_CODE_BUTTON_PRESSED) {
+        HM_DEBUG("Mouse button pressed: %d", context.data.u16[0]);
+    } else {
+        HM_DEBUG("Mouse button released: %d", context.data.u16[0]);
+    }
+
+    return TRUE;
+}
+
+b8 on_mouse_move(EventCode code, void *sender, void *listener_inst, EventContext context) {
     HM_DEBUG("Mouse moved: %d, %d", context.data.u16[0], context.data.u16[1]);
     return TRUE;
 }
+
 
 b8 game_initialize(struct game *game_inst) {
     HM_DEBUG("Game Initialize called");
 
     event_subscribe(EVENT_CODE_KEY_PRESSED, 0, on_keypress);
+    event_subscribe(EVENT_CODE_BUTTON_PRESSED, 0, on_button_press);
+    event_subscribe(EVENT_CODE_BUTTON_RELEASED, 0, on_button_press);
     event_subscribe(EVENT_CODE_MOUSE_MOVED, 0, on_mouse_move);
 
     return TRUE;
