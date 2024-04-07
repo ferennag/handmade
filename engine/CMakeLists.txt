@@ -22,6 +22,8 @@ add_library(engine SHARED
         src/core/event.c
         include/containers/darray.h
         src/containers/darray.c
+        include/core/input.h
+        src/core/input.c
 )
 
 if (APPLE)

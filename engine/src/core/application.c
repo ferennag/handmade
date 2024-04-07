@@ -4,6 +4,7 @@
 #include "platform/platform.h"
 #include "core/memory.h"
 #include "core/event.h"
+#include "core/input.h"
 
 typedef struct application_state {
     Game *game_inst;
@@ -36,6 +37,11 @@ b8 application_create(Game *game_inst) {
 
     if (!event_init()) {
         HM_ERROR("Failed to initialize the event subsystem!");
+        return FALSE;
+    }
+
+    if (!input_init()) {
+        HM_ERROR("Failed to initialize the input subsystem!");
         return FALSE;
     }
 
@@ -83,13 +89,19 @@ b8 application_run() {
                 app_state.is_running = FALSE;
                 break;
             }
+
+
+            // Input is checked at the end of the frame, and used in the next frame
+            // TODO pass delta time
+            input_update(0);
         }
     }
 
     app_state.is_running = FALSE;
 
-    shutdown_logging();
+    input_shutdown();
     event_shutdown();
+    shutdown_logging();
 
     platform_shutdown(&app_state.platform);
     return TRUE;
