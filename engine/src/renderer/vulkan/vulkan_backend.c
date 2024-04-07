@@ -7,6 +7,7 @@
 
 static VulkanContext context = {0};
 
+// Vulkan debugger callback, this will be called for vulkan messages, we can do our own logging here.
 VkBool32 vk_debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                            VkDebugUtilsMessageTypeFlagsEXT messageTypes,
                            const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
@@ -81,6 +82,7 @@ b8 vulkan_backend_initialize(RendererBackend *renderer_backend, const char *app_
     darray_destroy(extensions);
     darray_destroy(layers);
 
+    // Setup the vulkan debugger in debug mode
 #if DEBUG == TRUE
     HM_DEBUG("Creating Vulkan Debugger...");
     u32 severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT
@@ -106,6 +108,12 @@ b8 vulkan_backend_initialize(RendererBackend *renderer_backend, const char *app_
 }
 
 void vulkan_backend_shutdown(RendererBackend *renderer_backend) {
+    if(context.debug_messenger) {
+        PFN_vkDestroyDebugUtilsMessengerEXT func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(context.instance, "vkDestroyDebugUtilsMessengerEXT");
+        func(context.instance, context.debug_messenger, context.allocation_callbacks);
+    }
+
+    vkDestroyInstance(context.instance, context.allocation_callbacks);
 }
 
 void vulkan_backend_resized(RendererBackend *renderer_backend, u16 width, u16 height) {
