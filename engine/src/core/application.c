@@ -5,6 +5,7 @@
 #include "core/memory.h"
 #include "core/event.h"
 #include "core/input.h"
+#include "core/clock.h"
 
 typedef struct application_state {
     Game *game_inst;
@@ -13,7 +14,7 @@ typedef struct application_state {
     PlatformState platform;
     i16 width;
     i16 height;
-    f64 last_time;
+    Clock clock;
 } ApplicationState;
 
 static b8 initialized = FALSE;
@@ -70,6 +71,11 @@ b8 application_create(Game *game_inst) {
 }
 
 b8 application_run() {
+    clock_start(&app_state.clock);
+    clock_update(&app_state.clock);
+
+    f64 target_fps = 1.0f / 60.0f;
+
     HM_INFO(get_memory_usage_str());
 
     while (app_state.is_running) {
@@ -78,22 +84,37 @@ b8 application_run() {
         }
 
         if (!app_state.is_suspended) {
-            if (!app_state.game_inst->update(app_state.game_inst, 0)) {
+            clock_update(&app_state.clock);
+            clock_start_frame(&app_state.clock);
+            f64 delta = clock_delta_time(&app_state.clock);
+
+            if (!app_state.game_inst->update(app_state.game_inst, delta)) {
                 HM_FATAL("Game update failed!");
                 app_state.is_running = FALSE;
                 break;
             }
 
-            if (!app_state.game_inst->render(app_state.game_inst, 0)) {
+            if (!app_state.game_inst->render(app_state.game_inst, delta)) {
                 HM_FATAL("Game render failed!");
                 app_state.is_running = FALSE;
                 break;
             }
 
+            clock_end_frame(&app_state.clock);
+            f64 remaining_seconds = target_fps - app_state.clock.frame_elapsed;
+
+            if (remaining_seconds > 0) {
+                f64 remaining_ms = remaining_seconds * 1000;
+                b8 limit_frames = FALSE;
+
+                if (remaining_ms > 0 && limit_frames) {
+                    platform_sleep(remaining_ms - 1);
+                }
+            }
 
             // Input is checked at the end of the frame, and used in the next frame
             // TODO pass delta time
-            input_update(0);
+            input_update(delta);
         }
     }
 

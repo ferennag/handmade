@@ -24,6 +24,8 @@ add_library(engine SHARED
         src/containers/darray.c
         include/core/input.h
         src/core/input.c
+        include/core/clock.h
+        src/core/clock.c
 )
 
 if (APPLE)
