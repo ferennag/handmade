@@ -41,5 +41,9 @@ STATIC_ASSERT(sizeof(b32) == 4, "Expected b32 to be 4 byte");
 #define TRUE 1
 #define FALSE 0
 
+#ifndef DEBUG
+#define DEBUG TRUE
+#endif
+
 // TODO make this multi-platform
 #define HN_PLATFORM_MACOSX

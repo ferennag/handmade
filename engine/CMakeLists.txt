@@ -34,6 +34,9 @@ add_library(engine SHARED
         include/renderer/vulkan/vulkan_backend.h
         src/renderer/vulkan/vulkan_backend.c
         include/renderer/vulkan/vulkan_types.h
+        include/core/string.h
+        src/core/string.c
+        include/renderer/vulkan/vulkan_platform.h
 )
 
 if (APPLE)
@@ -49,6 +52,7 @@ endif ()
 target_compile_options(engine PRIVATE -g -Wall -Werror -Wvarargs)
 target_link_libraries(engine Vulkan::Vulkan ${WINDOWING_LIBRARIES})
 target_include_directories(engine PUBLIC include)
+target_compile_definitions(${PROJECT_NAME} PRIVATE "DEBUG=$<IF:$<CONFIG:Debug>,1,0>")
 
 add_subdirectory(tests)
 

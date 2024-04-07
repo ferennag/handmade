@@ -18,7 +18,7 @@ b8 on_button_press(EventCode code, void *sender, void *listener_inst, EventConte
 }
 
 b8 on_mouse_move(EventCode code, void *sender, void *listener_inst, EventContext context) {
-    HM_DEBUG("Mouse moved: %d, %d", context.data.u16[0], context.data.u16[1]);
+//    HM_DEBUG("Mouse moved: %d, %d", context.data.u16[0], context.data.u16[1]);
     return TRUE;
 }
 

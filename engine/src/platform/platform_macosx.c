@@ -10,6 +10,7 @@
 #include <X11/Xutil.h>
 #include <X11/keysymdef.h>
 #include <sys/time.h>
+#include "containers/darray.h"
 
 #if _POSIX_C_SOURCE >= 199309L
 #include <time.h>
@@ -173,6 +174,10 @@ void platform_console_write(const char *message, u8 color) {
 void platform_console_write_error(const char *message, u8 color) {
     const char *colors[] = {"0;41", "1;31", "1;33", "1;32", "0;41", "1;34", "1;30"};
     printf("\033[%sm%s\033[0m", colors[color], message);
+}
+
+void platform_get_required_extension_names(const char ***out_extensions) {
+    darray_push(*out_extensions, &"VK_MVK_macos_surface");
 }
 
 f64 platform_get_absolute_time() {
