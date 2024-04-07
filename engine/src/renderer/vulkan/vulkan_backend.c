@@ -7,6 +7,11 @@
 
 static VulkanContext context = {0};
 
+VkBool32 vk_debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                           VkDebugUtilsMessageTypeFlagsEXT messageTypes,
+                           const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+                           void *pUserData);
+
 b8 vulkan_backend_initialize(RendererBackend *renderer_backend, const char *app_name, PlatformState *plat_state) {
     // TODO custom allocator
     context.allocation_callbacks = 0;
@@ -27,7 +32,7 @@ b8 vulkan_backend_initialize(RendererBackend *renderer_backend, const char *app_
     darray_push(extensions, &VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
     HM_DEBUG("Required Vulkan Extensions: ");
-    for(u32 i = 0; i < darray_length(extensions); ++i) {
+    for (u32 i = 0; i < darray_length(extensions); ++i) {
         HM_DEBUG("  - %s", extensions[i]);
     }
 #endif
@@ -48,7 +53,7 @@ b8 vulkan_backend_initialize(RendererBackend *renderer_backend, const char *app_
         HM_INFO("Searching for layer: %s", layers[i]);
         b8 found = FALSE;
         for (u32 j = 0; j < available_layer_count; ++j) {
-            if(strings_equal(layers[i], available_layers[j].layerName)) {
+            if (strings_equal(layers[i], available_layers[j].layerName)) {
                 found = TRUE;
                 HM_INFO("Found.");
                 break;
@@ -76,8 +81,27 @@ b8 vulkan_backend_initialize(RendererBackend *renderer_backend, const char *app_
     darray_destroy(extensions);
     darray_destroy(layers);
 
-    HM_INFO("Vulkan Renderer initialized successfully.");
+#if DEBUG == TRUE
+    HM_DEBUG("Creating Vulkan Debugger...");
+    u32 severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT
+            | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
 
+    VkDebugUtilsMessengerCreateInfoEXT debug_create_info = {VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT};
+    debug_create_info.messageSeverity = severity;
+    debug_create_info.messageType =
+            VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT |
+            VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+    debug_create_info.pfnUserCallback = vk_debug_callback;
+    debug_create_info.pUserData = 0;
+
+    PFN_vkCreateDebugUtilsMessengerEXT func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(
+            context.instance, "vkCreateDebugUtilsMessengerEXT");
+    HM_ASSERT_MSG(func, "Failed to create debug messenger!");
+    VK_CHECK(func(context.instance, &debug_create_info, context.allocation_callbacks, &context.debug_messenger));
+    HM_DEBUG("Vulkan Debugger created");
+#endif
+
+    HM_INFO("Vulkan Renderer initialized successfully.");
     return TRUE;
 }
 
@@ -93,4 +117,28 @@ b8 vulkan_backend_begin_frame(RendererBackend *renderer_backend, f32 delta_time)
 
 b8 vulkan_backend_end_frame(RendererBackend *renderer_backend, f32 delta_time) {
     return TRUE;
+}
+
+VkBool32 vk_debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                           VkDebugUtilsMessageTypeFlagsEXT messageTypes,
+                           const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+                           void *pUserData
+) {
+    switch (messageSeverity) {
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+            HM_ERROR(pCallbackData->pMessage);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+            HM_WARN(pCallbackData->pMessage);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+            HM_INFO(pCallbackData->pMessage);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+            HM_DEBUG(pCallbackData->pMessage);
+            break;
+        default:
+            break;
+    }
+    return VK_FALSE;
 }
