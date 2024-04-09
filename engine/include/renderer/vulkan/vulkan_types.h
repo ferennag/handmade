@@ -20,6 +20,7 @@ typedef struct VulkanContext {
     VkInstance instance;
     VkAllocationCallbacks *allocation_callbacks;
     VulkanDevice device;
+    VkSurfaceKHR surface;
 
 #if DEBUG == TRUE
     VkDebugUtilsMessengerEXT debug_messenger;

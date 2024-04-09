@@ -104,7 +104,10 @@ b8 vulkan_backend_initialize(RendererBackend *renderer_backend, const char *app_
     HM_DEBUG("Vulkan Debugger created");
 #endif
 
-
+    if(!platform_create_vulkan_surface(plat_state, &context)) {
+        HM_ERROR("Unable to create the Vulkan surface.");
+        return FALSE;
+    }
 
     if (!vulkan_device_create(&context)) {
         HM_ERROR("Unable to create the Vulkan device.");
@@ -120,6 +123,8 @@ void vulkan_backend_shutdown(RendererBackend *renderer_backend) {
         PFN_vkDestroyDebugUtilsMessengerEXT func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(context.instance, "vkDestroyDebugUtilsMessengerEXT");
         func(context.instance, context.debug_messenger, context.allocation_callbacks);
     }
+
+    vkDestroySurfaceKHR(context.instance, context.surface, context.allocation_callbacks);
 
     vulkan_device_destroy(&context);
 

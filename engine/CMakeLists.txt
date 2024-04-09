@@ -1,17 +1,18 @@
 cmake_minimum_required(VERSION 3.27)
-project(engine LANGUAGES C CXX)
+project(engine LANGUAGES C)
 set(CMAKE_C_STANDARD 17)
 
 include(CTest)
 
 find_package(Vulkan REQUIRED)
+find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL2)
+
 add_library(engine SHARED
         include/defines.h
         include/core/logger.h
         src/core/logger.c
         include/core/asserts.h
         include/platform/platform.h
-        src/platform/platform_macosx.c
         include/core/application.h
         src/core/application.c
         include/game_types.h
@@ -39,20 +40,11 @@ add_library(engine SHARED
         include/renderer/vulkan/vulkan_platform.h
         include/renderer/vulkan/vulkan_device.h
         src/renderer/vulkan/vulkan_device.c
+        src/platform/platform_sdl.c
 )
 
-if (APPLE)
-    find_package(X11 REQUIRED)
-    message(STATUS "Using X11 windowing system for Apple platforms.")
-    message(STATUS "X11_FOUND = ${X11_FOUND}")
-    message(STATUS "X11_INCLUDE_DIR = ${X11_INCLUDE_DIR}")
-    message(STATUS "X11_LIBRARIES = ${X11_LIBRARIES}")
-
-    set(WINDOWING_LIBRARIES X11::X11 X11::xcb X11::X11_xcb)
-endif ()
-
 target_compile_options(engine PRIVATE -g -Wall -Werror -Wvarargs)
-target_link_libraries(engine Vulkan::Vulkan ${WINDOWING_LIBRARIES})
+target_link_libraries(engine Vulkan::Vulkan ${SDL2_LIBRARIES})
 target_include_directories(engine PUBLIC include)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "DEBUG=$<IF:$<CONFIG:Debug>,1,0>")
 
